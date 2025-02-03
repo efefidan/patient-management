@@ -1,5 +1,4 @@
 import PatientForm from "@/components/forms/PatientForm";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,7 +21,7 @@ export default function Home() {
           <div className="text-white text-14-regular mt-20 flex justify-between">
             <p className="justify-items-end text-dark-600 xl:text-left">copyright 2024</p>
             <Link href="/admin=true" className="text-green-500">
-            Admin
+            Yönetici
             </Link>
           </div>
         </div>
