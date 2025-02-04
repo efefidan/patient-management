@@ -69,16 +69,17 @@ console.log("🟢 Strapi'de Son Appointment ID:", appointment.id);
                     width={100}
                     height={100}
                     className='size-6'/>
-                    <p className='whitespace-nowrap'>Dr. {doctor?.name}</p>
+                    <p className='whitespace-nowrap text-white'>Dr. {doctor?.name}</p>
                 </div>
                 <div className='flex gap-2'>
                     <Image
-                    src="assets/icons/calendar.svg"
+                    src="/assets/icons/calendar.svg"
                     height={24}
                     width={24}
-                    alt='calendar'/>
+                    alt='calendar'
+                    />
                 </div>
-                <p>{formatDateTime(appointment.schedule).dateTime}</p>
+                <p className='text-white'>{formatDateTime(appointment.schedule).dateTime}</p>
             </section>
 
             <Button variant="outline" className='text-white shad-primary-btn' asChild >
