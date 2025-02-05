@@ -316,8 +316,13 @@ const RegisterForm = ({ user }: { user: User }) => {
             <FormControl>
 <FileUploader 
     files={field.value || []} 
-    onChange={(files) => form.setValue("identificationDocument", files)} 
+    onChange={(files) => {
+        if (files.length > 0) {
+            form.setValue("identificationDocument", files[0]); // ✅ Sadece ilk dosyayı kaydet
+        }
+    }} 
 />
+
             </FormControl>
           )}
         />

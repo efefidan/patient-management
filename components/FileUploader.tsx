@@ -34,7 +34,10 @@ const FileUploader = ({files, onChange}:
             });
     
             console.log("✅ Strapi'ye Yüklenen Dosyanın ID'si:", uploadResponse.data[0].id);
-            onChange([uploadResponse.data[0].id]); // ✅ Kullanıcıya ID'yi kaydediyoruz
+            const uploadedFile = uploadResponse.data[0]; 
+const fileUrl = uploadedFile.url; // ✅ Strapi’nin döndürdüğü dosya URL’si
+onChange([fileUrl]); // ✅ ID yerine URL kaydediyoruz
+
         } catch (error) {
             console.error("❌ Dosya yükleme hatası:", error);
         }    onChange(acceptedFiles);
@@ -53,7 +56,7 @@ const FileUploader = ({files, onChange}:
     <div {...getRootProps()} className='file-upload'>
       <input {...getInputProps()} />
       {files && files.length > 0 && files[0] instanceof File ? (
-    <Image src={convertFileToUrl(files[0])} width={1000} height={1000} alt='uploaded image' />
+        <Image src={URL.createObjectURL(files[0])} width={1000} height={1000} alt='uploaded image' />
 )  : (
         <>
         <Image

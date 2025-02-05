@@ -72,17 +72,23 @@ export const createAppointment = async (appointmentData: Appointment) => {
 
 
 // Dosya Yükleme (Strapi Upload API)
-export const uploadFile = async (file: File) => {
+export const uploadFileToStrapi = async (file: File) => {
   const formData = new FormData();
   formData.append("files", file);
 
   try {
-    const response = await apiClient.post(API_ROUTES.storage, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    const response = await axios.post(`${STRAPI_BASE_URL}/api/upload`, formData, {
+      headers: { 
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`
+      },
     });
-    return response.data;
+
+    console.log("✅ Dosya Strapi'ye yüklendi:", response.data);
+    return response.data[0]; // ✅ Yüklenen dosyanın detaylarını döndür
   } catch (error) {
-    console.error("Strapi API Hatası:", error);
+    console.error("❌ Strapi'ye dosya yüklenirken hata oluştu:", error);
     throw error;
   }
 };
+
