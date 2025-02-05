@@ -29,6 +29,7 @@ export interface User {
   
   export interface Appointment {
     id: string;
+    documentId: string;
     patient: User; // Strapi’de `users` koleksiyonunda olduğu için `User` tipi ile ilişkilendirildi
     schedule: string; // Date yerine string formatında olmalı
     appointmentStatus: "scheduled" | "completed" | "cancelled";

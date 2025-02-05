@@ -96,6 +96,7 @@ declare type CreateAppointmentParams = {
  */
 declare type UpdateAppointmentParams = {
   appointmentId: number;
+  documentId: string;
   id: string;
   appointment: CreateAppointmentParams;
   type: string;

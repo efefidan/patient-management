@@ -19,27 +19,34 @@ import { Doctors } from "@/constants";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import { createAppointment } from "@/lib/strapiClient";
+import { Appointment } from "@/types/strapi.types";
+import { updateAppointment } from "@/lib/actions/appointment.actions";
 
 const AppointmentForm = ({
   id,
   type,
+  appointment,
+  setOpen,
 }: {
   id: string;
   type: "create" | "cancel" | "schedule";
+  appointment?: Appointment;
+  setOpen: (open: boolean) => void;
 }) => {
   const router = useRouter(); // ✅ Parantez ekleyerek çağırmalısın!
   const [isLoading, setIsLoading] = useState(false);
+
 
   const AppointmentFormValidation = getAppointmentSchema(type);
 
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: "",
-      schedule: new Date(),
-      reason: "",
-      note: "",
-      cancellationReason: "",
+      primaryPhysician: appointment ? appointment.primaryPhysician : '',
+      schedule: appointment ? new Date(appointment.schedule) : new Date(Date.now()),
+      reason: appointment ? appointment.reason : '',
+      note: appointment?.note || '' ,
+      cancellationReason: appointment?.cancellationReason || '',
     },
   });
 
@@ -53,7 +60,7 @@ const AppointmentForm = ({
         appointmentStatus = "scheduled";
         break;
       case "cancel":
-        appointmentStatus = "canceled";
+        appointmentStatus = "cancelled";
         break;
       default:
         appointmentStatus = "pending";
@@ -90,7 +97,27 @@ if (appointment && appointment.data) {
     console.error("❌ Strapi'den dönen randevu verisi eksik!", appointment);
 }
 
-      }
+      } else{
+        const appointmentToUpdate ={
+          id,
+          appointmentId: appointment?.documentId!,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician,
+            schedule: new Date(values?.schedule).toISOString(),
+            appointmentStatus: appointmentStatus as appointmentStatus,
+            cancellationReason: values?.cancellationReason,
+          },
+          type
+        }
+
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
+
+        if(updatedAppointment) {
+          setOpen && setOpen(false);
+          form.reset();
+          router.refresh(); // ✅ Sayfayı otomatik olarak yenile
+        }
+      } 
     } catch (error) {
       console.log(error);
     }
@@ -114,13 +141,13 @@ if (appointment && appointment.data) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-        <section className="mb-12 space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1 ">
+       {type === 'create' &&  <section className="mb-12 space-y-4 ">
           <h1 className=" text-white header">New Appointment</h1>
           <p className="text-dark-700">
             Request a new appointment in 10 seconds
           </p>
-        </section>
+        </section>}
 
         {type !== "cancel" && (
           <>
